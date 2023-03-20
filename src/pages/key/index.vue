@@ -66,7 +66,7 @@ const createColumns = (): DataTableColumns<RowData> => [
   {
     title: 'Action',
     key: 'actions',
-    render(row) {
+    render(row, context) {
       return createActions(row)
     },
   },

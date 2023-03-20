@@ -4,7 +4,5 @@ body,
   height: 100%;
   margin: 0;
   padding: 0;
-  background-image: url(~/assets/bg.png);
-  background-size: contain;
-  background-repeat: no-repeat;
+  overflow: hidden;
 }

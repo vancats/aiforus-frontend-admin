@@ -1,13 +1,13 @@
 import Layout from '~/pages/index.vue'
-import CardPage from '~/pages/card/index.vue'
-import PromptPage from '~/pages/prompt/index.vue'
-import FeedbackPage from '~/pages/feedback/index.vue'
+import Prompt from '~/pages/prompt/index.vue'
+import Tool from '~/pages/tool/index.vue'
+import Key from '~/pages/key/index.vue'
 
 const routes = [
-  { path: '/', component: Layout },
-  { path: '/card/:id', component: CardPage },
-  { path: '/prompt/:id', component: PromptPage },
-  { path: '/feedback', component: FeedbackPage },
+  { name: 'Home', path: '/', component: Layout },
+  { name: 'Prompt', path: '/prompt', component: Prompt },
+  { name: 'Tool', path: '/tool', component: Tool },
+  { name: 'Key', path: '/key', component: Key },
 ]
 
 export default routes
