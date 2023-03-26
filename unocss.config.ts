@@ -26,9 +26,12 @@ export default defineConfig({
 
     // Flex flex + align-items + justify-content + flex-direction
     ['flex-center', 'flex items-center'],
+    ['flex-center-start', 'flex-center justify-center'],
     ['flex-center-between', 'flex-center justify-between'],
     ['flex-center-between-col', 'flex-center-between flex-col'],
     ['flex-wrap', 'flex flex-wrap'],
+
+    ['tag', 'p-4 border rounded-lg cursor'],
   ],
 
   rules: [
@@ -67,6 +70,16 @@ export default defineConfig({
       },
     }),
   ],
+
+//   preflights: [
+//     {
+//       getCSS: () => `
+//         .n-button {
+//           background-color: var(--n-color);
+//         }
+//       `,
+//     },
+//   ],
   // transformers: [
   //   transformerDirectives(),
   //   transformerVariantGroup(),

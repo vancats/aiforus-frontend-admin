@@ -1,86 +1,45 @@
 <template>
-  <n-data-table :columns="columns" :data="data" :pagination="pagination" />
+  <n-button mb-4 @click="showModal = true">
+    新增 Key
+  </n-button>
+  <n-data-table :columns="columns" :data="listData" :pagination="pagination" />
+
+  <n-modal
+    v-model:show="showModal"
+    preset="dialog"
+    title="新建key"
+    w="140!"
+    :show-icon="false"
+    auto-focus
+    positive-text="确认"
+    negative-text="取消"
+    :on-positive-click="confirm"
+    :on-click="keyValue = ''"
+  >
+    <n-input v-model:value="keyValue" />
+  </n-modal>
 </template>
 
 <script setup lang="ts">
 import type { DataTableColumns } from 'naive-ui'
-import { reactive } from 'vue'
-import naiveui from '~/utils/naiveui'
+import { getKeys, insertKey } from '~/api/key'
+import { createOptionalColumn } from '~/utils'
+defineOptions({ name: 'KeyPage' })
 
-interface RowData {
-  key: number
-  name: string
-  age: string
-  address: string
-}
-
-interface Action {
-  row: any
-  action: Function
-  title: string
-  style?: string
-}
-
-const sendMail = (rowData: RowData) => {
-  naiveui.message.info(`send mail to ${rowData.name}`)
-}
-
-const createAction = ({ row, action, title, style = 'text-blue cursor' }: Action) => {
-  return h('span',
-    {
-      className: style,
-      onClick: () => action(row),
-    },
-    { default: () => title },
-  )
-}
-
-const createActions = (row: any) => {
-  const actions: Action[] = [
-    { row, action: sendMail, title: '查看 | ' },
-    { row, action: sendMail, title: '编辑 | ' },
-    { row, action: sendMail, title: '删除' },
-  ]
-  return h('div', null, actions.map(createAction))
-}
-
-const createColumns = (): DataTableColumns<RowData> => [
-  {
-    type: 'selection',
-    disabled(row: RowData) {
-      return row.name === 'Edward King 3'
-    },
-  },
-  {
-    title: 'ID',
-    key: 'id',
-  },
-  {
-    title: '名称',
-    key: 'name',
-  },
-  {
-    title: '标签',
-    key: 'label',
-  },
-  {
-    title: 'Action',
-    key: 'actions',
-    render(row, context) {
-      return createActions(row)
-    },
-  },
+const columns: DataTableColumns<{ key: string }> = [
+  createOptionalColumn('key', 'key'),
 ]
-
-const columns = createColumns()
-
-const data = Array.from({ length: 46 }).map((_, index) => ({
-  key: index,
-  id: 32,
-  name: `Edward King ${index}`,
-  label: `London, Park Lane no. ${index}`,
-}))
-
+const listData = ref<Array<{ key: string }>>([])
+async function fetchKeys() {
+  try {
+    const data = await getKeys()
+    listData.value = data || []
+  }
+  catch (e) {
+    console.log(e)
+  }
+}
+fetchKeys()
 const pagination = reactive({
   page: 1,
   pageSize: 10,
@@ -94,4 +53,15 @@ const pagination = reactive({
     pagination.page = 1
   },
 })
+
+// Modal
+const showModal = ref(false)
+const keyValue = ref('')
+
+const confirm = async () => {
+  if (keyValue) {
+    await insertKey(keyValue.value)
+    fetchKeys()
+  }
+}
 </script>
