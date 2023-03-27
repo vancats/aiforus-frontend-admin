@@ -3,6 +3,7 @@ import axios from 'axios'
 import router from '../router'
 import { convertObjectKeysToCamelCase, convertObjectKeysToSnakeCase, getLocalItem, removeLocalItem } from '.'
 import naiveui from '~/utils/naiveui'
+import { FILE_URL } from '~/api'
 
 // 定义请求响应参数，不含data
 interface Result {
@@ -15,7 +16,7 @@ interface ResultData<T = any> extends Result {
   data?: T
 }
 
-const URL = import.meta.env.VITE_BASEURL
+const URL = import.meta.env.VITE_BASE_URL
 
 enum RequestEnums {
   SUCCESS = 200, // 请求成功
@@ -44,8 +45,10 @@ class RequestHttp {
       (config: InternalAxiosRequestConfig) => {
         const token = getLocalItem('token') || ''
         if (token) config.headers.set('Authorization', `Bearer ${token}`)
-        // 将接口的 key 转为 snake case
-        config.data = convertObjectKeysToSnakeCase(config.data)
+        if (config.url !== FILE_URL) {
+          // 将接口的 key 转为 snake case
+          config.data = convertObjectKeysToSnakeCase(config.data)
+        }
         return config
       },
       (error: AxiosError) => {
@@ -100,8 +103,8 @@ class RequestHttp {
     return this.service.get(url, { params })
   }
 
-  post<T>(url: string, params?: object): Promise<ResultData<T>> {
-    return this.service.post(url, params)
+  post<T>(url: string, params?: object, config?: object): Promise<ResultData<T>> {
+    return this.service.post(url, params, config)
   }
 
   put<T>(url: string, params?: object): Promise<ResultData<T>> {

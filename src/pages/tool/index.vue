@@ -49,9 +49,6 @@
       <n-form-item label="名称:" path="name">
         <n-input v-model:value="model.name" maxlength="30" placeholder="请输入" />
       </n-form-item>
-      <n-form-item label="描述:" path="description">
-        <n-input v-model:value="model.description" type="textarea" maxlength="100" placeholder="请输入" />
-      </n-form-item>
       <n-form-item label="简介:" path="brief">
         <n-input v-model:value="model.brief" type="textarea" maxlength="200" placeholder="请输入" />
       </n-form-item>
@@ -61,17 +58,17 @@
       <n-form-item label="外链路径:" path="outsideUrl">
         <n-input v-model:value="model.outsideUrl" placeholder="请输入" />
       </n-form-item>
-      <n-form-item label="使用说明图片:" path="usageImageUrl">
-        <n-input v-model:value="model.usageImageUrl" />
+      <n-form-item label="使用说明图片:">
+        <Upload v-model:url="model.usageImageUrl" />
       </n-form-item>
-      <n-form-item label="使用说明视频:" path="usageVideoUrl">
-        <n-input v-model:value="model.usageVideoUrl" />
+      <n-form-item label="使用说明视频:">
+        <Upload v-model:url="model.usageVideoUrl" />
       </n-form-item>
-      <n-form-item label="二维码图片:" path="qrcodeUrl">
-        <n-input v-model:value="model.qrcodeUrl" />
+      <n-form-item label="二维码图片:">
+        <Upload v-model:url="model.qrcodeUrl" />
       </n-form-item>
       <n-form-item label="icon图片:" path="iconUrl">
-        <n-input v-model:value="model.iconUrl" />
+        <Upload v-model:url="model.iconUrl" />
       </n-form-item>
       <n-form-item label="标签" path="tagId">
         <n-radio-group v-model:value="model.tagId">
@@ -177,8 +174,8 @@ const deleteMultipleItem = async () => {
         positiveText: '确定',
         negativeText: '取消',
         onPositiveClick: async () => {
-          const ids = listData.value.filter(item => checkedRowKeys.value.includes(item.id)).map(i => i.id)
-          await deleteCard(ids)
+          const idList = listData.value.filter(item => checkedRowKeys.value.includes(item.id)).map(i => i.id)
+          await deleteCard(idList)
           naiveui.message.success('删除成功！')
           location.reload()
         },

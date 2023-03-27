@@ -36,7 +36,7 @@ async function fetchKeys() {
     listData.value = data || []
   }
   catch (e) {
-    console.log(e)
+    console.warn(e)
   }
 }
 fetchKeys()

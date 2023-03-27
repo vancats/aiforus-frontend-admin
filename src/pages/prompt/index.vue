@@ -49,9 +49,6 @@
       <n-form-item label="名称:" path="name">
         <NInput v-model:value="model.name" maxlength="30" placeholder="请输入" />
       </n-form-item>
-      <n-form-item label="描述:" path="description">
-        <NInput v-model:value="model.description" type="textarea" maxlength="100" placeholder="请输入" />
-      </n-form-item>
       <n-form-item label="简介:" path="brief">
         <NInput v-model:value="model.brief" type="textarea" maxlength="200" placeholder="请输入" />
       </n-form-item>
@@ -67,14 +64,17 @@
       <div text-red pl-30>
         key 和 prompt 对应，title 描述，value 值，多值用英文逗号隔开，切记英文
         <p>
+          先输入 prompt 会清空变量，暂时不做优化
+        </p>
+        <p>
           如 title: 职业 value: 产品,前端
         </p>
       </div>
       <n-form-item label="添加变量:">
-        <n-data-table :columns="variableColumns" :data="model.variableList" />
+        <n-data-table :columns="variableColumns" :row-key="(row: VariableInfo) => row.variable" :data="variableList" />
       </n-form-item>
       <n-form-item label="icon图片:" path="iconUrl">
-        <NInput v-model:value="model.iconUrl" />
+        <Upload v-model:url="model.iconUrl" />
       </n-form-item>
       <n-form-item label="标签" path="tagId">
         <n-radio-group v-model:value="model.tagId">
@@ -104,6 +104,7 @@ import { createActions, initModel, rules } from './utils'
 import { deleteCard, modifyCard, searchCard, searchTag } from '~/api/prompt'
 import naiveui from '~/utils/naiveui'
 import { createOptionalColumn } from '~/utils'
+
 defineOptions({ name: 'PromptPage' })
 
 const tags = ref<TagInfo[]>([])
@@ -116,6 +117,8 @@ const activeTag = ref(0)
 const searchVal = ref('')
 
 const listData = ref<PromptInfo[]>([])
+
+const variableList = ref<VariableInfo[]>([])
 
 const showModal = ref(false)
 const model = ref<PromptInfo>(initModel())
@@ -157,18 +160,20 @@ const handleCheck = (rowKeys: DataTableRowKey[]) => {
 }
 const insertItem = () => {
   model.value = initModel()
-  showModal.value = true
   formDisabled.value = false
+  showModal.value = true
 }
 const editItem = (row: PromptInfo) => {
   model.value = row
-  showModal.value = true
+  variableList.value = model.value.variableList || []
   formDisabled.value = false
+  showModal.value = true
 }
 const checkItem = (row: PromptInfo) => {
   formDisabled.value = true
-  model.value = row
+  variableList.value = model.value.variableList || []
   showModal.value = true
+  model.value = row
 }
 
 const deleteItem = async (id: number) => {
@@ -190,8 +195,8 @@ const deleteMultipleItem = async () => {
         positiveText: '确定',
         negativeText: '取消',
         onPositiveClick: async () => {
-          const ids = listData.value.filter(item => checkedRowKeys.value.includes(item.id)).map(i => i.id)
-          await deleteCard(ids)
+          const idList = listData.value.filter(item => checkedRowKeys.value.includes(item.id)).map(i => i.id)
+          await deleteCard(idList)
           naiveui.message.success('删除成功！')
           location.reload()
         },
@@ -237,20 +242,20 @@ const onPrompt = () => {
   const matches = model.value.prompt.match(regex)
   if (matches) {
     const keys = matches.map(match => match.slice(1, -1))
-    model.value.variableList = keys.map(key => ({
-      key,
-      title: '',
+    variableList.value = keys.map(variable => ({
+      variable,
+      description: '',
       value: '',
     }))
   }
 }
 const variableColumns: DataTableColumns<VariableInfo> = [
-  createOptionalColumn('key', 'key'),
-  createOptionalColumn('title', 'title', {
+  createOptionalColumn('variable', 'variable'),
+  createOptionalColumn('description', 'description', {
     render: (row, index) => h(NInput, {
-      value: row.title,
+      value: row.description,
       onUpdateValue(v) {
-        model.value.variableList[index].title = v
+        variableList.value[index].description = v
       },
     }),
   }),
@@ -258,7 +263,7 @@ const variableColumns: DataTableColumns<VariableInfo> = [
     render: (row, index) => h(NInput, {
       value: row.value,
       onUpdateValue(v) {
-        model.value.variableList[index].value = v
+        variableList.value[index].value = v
       },
     }),
   }),
@@ -266,13 +271,12 @@ const variableColumns: DataTableColumns<VariableInfo> = [
 
 const formRef = ref<FormInst | null>(null)
 const confirm = () => {
-  const list = model.value.variableList
-  if (!list.length) {
+  if (!variableList.value.length) {
     naiveui.message.warning('请添加变量！')
     return false
   }
-  for (const { key, title, value } of list) {
-    if ([key, title, value].some(i => !i)) {
+  for (const { variable, description, value } of variableList.value) {
+    if ([variable, description, value].some(i => !i)) {
       naiveui.message.warning('请输入变量参数！')
       return false
     }
@@ -280,6 +284,7 @@ const confirm = () => {
   return formRef.value?.validate(async (errors) => {
     if (!errors) {
       try {
+        model.value.variableList = variableList.value
         await modifyCard(model.value)
         naiveui.message.success('操作成功')
         location.reload()

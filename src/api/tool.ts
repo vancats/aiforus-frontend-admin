@@ -15,7 +15,7 @@ namespace ToolPage {
 }
 
 export const searchTag = async () => {
-  return await axios.post<Array<TagInfo>>('/tag/query', { type: TOOL_TYPE }).then(res => res.data)
+  return await axios.post<Array<TagInfo>>('/tag/query', { type: TOOL_TYPE }).then(res => res?.data)
 }
 
 export const modifyTag = async (params: ToolPage.InsertTagReqData) => {
@@ -27,11 +27,11 @@ export const deleteTag = async () => {
 }
 
 export const searchCard = async (params: ToolPage.SearchCardReqData) => {
-  return await axios.post<Array<ToolInfo>>('/card/query', { ...params, type: TOOL_TYPE }).then(res => res.data)
+  return await axios.post<Array<ToolInfo>>('/card/query', { ...params, type: TOOL_TYPE }).then(res => res?.data)
 }
 
-export const deleteCard = async (id: number[]) => {
-  return await axios.post('/card/delete', { id, type: TOOL_TYPE })
+export const deleteCard = async (idList: number[]) => {
+  return await axios.post('/card/delete', { idList, type: TOOL_TYPE })
 }
 
 export const modifyCard = async (params: ToolInfo) => {

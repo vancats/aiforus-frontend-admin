@@ -9,11 +9,6 @@ export const rules = {
     trigger: ['blur', 'input'],
     message: '请输入名称',
   },
-  description: {
-    required: true,
-    trigger: ['blur', 'input'],
-    message: '请输入描述',
-  },
   brief: {
     required: true,
     trigger: ['blur', 'input'],

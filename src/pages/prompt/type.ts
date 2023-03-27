@@ -5,8 +5,8 @@ export interface TagInfo {
 }
 
 export interface VariableInfo {
-  key: string
-  title: string
+  variable: string
+  description: string
   value: string
 }
 
