@@ -19,7 +19,7 @@ export interface PromptInfo {
   input: string
   variableList: Array<VariableInfo>
   iconUrl: string
-  tagId?: number
+  tagIdList: number[]
   visible: boolean
   hot: boolean
   pageView: number

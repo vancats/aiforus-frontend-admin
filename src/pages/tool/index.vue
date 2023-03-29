@@ -70,12 +70,10 @@
       <n-form-item label="icon图片:" path="iconUrl">
         <Upload v-model:url="model.iconUrl" />
       </n-form-item>
-      <n-form-item label="标签" path="tagId">
-        <n-radio-group v-model:value="model.tagId">
-          <n-radio v-for="tag in tags" :key="tag.id" :value="tag.id">
-            {{ tag.name }}
-          </n-radio>
-        </n-radio-group>
+      <n-form-item label="标签" path="tagIdList">
+        <n-checkbox-group v-model:value="model.tagIdList">
+          <n-checkbox v-for="tag in tags" :key="tag.id" :value="tag.id" :label="tag.name" />
+        </n-checkbox-group>
       </n-form-item>
       <n-form-item label="是否为热门内容" path="hot">
         <n-switch v-model:value="model.hot" />
@@ -195,7 +193,7 @@ const columns: DataTableColumns<ToolInfo> = [
   createOptionalColumn('id', 'ID'),
   createOptionalColumn('name', '名称'),
   createOptionalColumn('tag', '标签', {
-    render: (row: ToolInfo) => tags.value.find(i => i.id === row.tagId)?.name,
+    render: (row: ToolInfo) => tags.value.filter(i => row.tagIdList?.includes(i.id)).map(i => i.name).join(','),
   }),
   createOptionalColumn('action', '操作', {
     width: 180,
@@ -218,6 +216,10 @@ const pagination = reactive({
 
 const formRef = ref<FormInst | null>(null)
 const confirm = () => {
+  if (model.value.tagIdList.length > 1) {
+    naiveui.message.warning('当前版本只能选择一个标签！')
+    return false
+  }
   return formRef.value?.validate(async (errors) => {
     if (!errors) {
       try {

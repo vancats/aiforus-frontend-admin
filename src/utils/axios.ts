@@ -29,7 +29,7 @@ const config = {
   // 默认地址
   baseURL: URL as string,
   // 设置超时时间
-  timeout: RequestEnums.TIMEOUT,
+  //   timeout: RequestEnums.TIMEOUT,
   // 跨域时候允许携带凭证
   withCredentials: true,
 }

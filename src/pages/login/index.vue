@@ -51,6 +51,8 @@ const rules = {
 
 const formRef = ref<FormInst | null>(null)
 const router = useRouter()
+const route = useRoute()
+console.log(route.query.redirect)
 const onLogin = () => {
   return formRef.value?.validate(async (errors) => {
     if (!errors) {
@@ -61,7 +63,7 @@ const onLogin = () => {
       else {
         naiveui.message.success('登陆成功')
         setLocalItem('token', res.data.token)
-        router.push('/')
+        router.push(route.query.redirect as string || '/')
       }
     }
     else {

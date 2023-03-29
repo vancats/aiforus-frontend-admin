@@ -15,7 +15,7 @@ export interface ToolInfo {
   usageVideoUrl: string
   qrcodeUrl: string
   iconUrl: string
-  tagId?: number
+  tagIdList: number[]
   hot: boolean
   pageView: number
 }

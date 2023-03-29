@@ -1,8 +1,3 @@
-import { NPopconfirm, NSpace } from 'naive-ui'
-import type { PromptInfo } from './type'
-import { createAction } from '~/utils'
-import type { Action } from '~/utils/type'
-
 export const rules = {
   name: {
     required: true,
@@ -33,7 +28,7 @@ export const rules = {
     required: true,
     message: '请输入',
   },
-  tagId: {
+  tagIdList: {
     required: true,
     message: '请选择',
   },
@@ -41,27 +36,6 @@ export const rules = {
     required: true,
     message: '请输入',
   },
-}
-
-export function createActions(
-  row: PromptInfo,
-  deleteItem: (id: number) => void,
-  editItem: (row: PromptInfo) => void,
-  checkItem: (row: PromptInfo) => void,
-) {
-  const getDeleteConfirm = (id: number) => h(NPopconfirm, {
-    positiveText: '确定',
-    negativeText: '取消',
-    onPositiveClick: () => deleteItem(id),
-  }, {
-    trigger: () => h('span', { className: 'text-blue cursor' }, '删除'),
-    default: () => '确定删除吗？',
-  })
-  const actions: Action[] = [
-    { row, action: checkItem, title: '查看' },
-    { row, action: editItem, title: '编辑' },
-  ]
-  return h(NSpace, null, () => [...actions.map(createAction), getDeleteConfirm(row.id)])
 }
 
 export const initModel = () => ({
@@ -73,7 +47,7 @@ export const initModel = () => ({
   input: '',
   variableList: [],
   iconUrl: '',
-  tagId: undefined,
+  tagIdList: [],
   visible: false,
   hot: false,
   pageView: 0,

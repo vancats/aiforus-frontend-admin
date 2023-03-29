@@ -1,18 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Layout from '~/pages/index.vue'
-import Login from '~/pages/login/index.vue'
-import Prompt from '~/pages/prompt/index.vue'
-import Tool from '~/pages/tool/index.vue'
-import Key from '~/pages/key/index.vue'
 import { getLocalItem } from '~/utils'
 import naiveui from '~/utils/naiveui'
 
+const _import = (path: string) => defineAsyncComponent(() => import(`~/pages/${path}/index.vue`))
+
 const routes = [
   { name: 'Home', path: '/', component: Layout },
-  { name: 'Login', path: '/login', component: Login },
-  { name: 'Prompt', path: '/prompt', component: Prompt },
-  { name: 'Tool', path: '/tool', component: Tool },
-  { name: 'Key', path: '/key', component: Key },
+  { name: 'Login', path: '/login', component: _import('login') },
+  { name: 'Prompt', path: '/prompt', component: _import('prompt') },
+  { name: 'Tool', path: '/tool', component: _import('tool') },
+  { name: 'Key', path: '/key', component: _import('key') },
 ]
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

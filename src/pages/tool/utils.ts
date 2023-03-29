@@ -43,7 +43,7 @@ export const rules = {
     required: true,
     message: '请输入',
   },
-  tagId: {
+  tagIdList: {
     required: true,
     message: '请选择',
   },
@@ -85,7 +85,7 @@ export const initModel = () => ({
   usageVideoUrl: '',
   qrcodeUrl: '',
   iconUrl: '',
-  tagId: undefined,
+  tagIdList: [],
   hot: false,
   pageView: 0,
 })

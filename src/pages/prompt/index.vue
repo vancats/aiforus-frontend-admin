@@ -53,16 +53,13 @@
         <NInput v-model:value="model.brief" type="textarea" maxlength="200" placeholder="请输入" />
       </n-form-item>
       <div text-red pl-30>
-        prompt 中必须要有变量输入，变量用花括号包裹，如：I am a {xxx}
+        prompt 中必须要有变量输入，变量用花括号包裹，如：I am a {xxx}，切记英文
       </div>
       <n-form-item label="prompt内容:" path="prompt">
         <NInput v-model:value="model.prompt" type="textarea" maxlength="200" placeholder="请输入" @input="onPrompt" />
       </n-form-item>
-      <n-form-item label="用户默认输入:" path="input">
-        <NInput v-model:value="model.input" type="textarea" maxlength="200" placeholder="请输入" />
-      </n-form-item>
       <div text-red pl-30>
-        key 和 prompt 对应，title 描述，value 值，多值用英文逗号隔开，切记英文
+        key 和 prompt 对应，title 描述，value 值，多值用逗号隔开，切记英文
         <p>
           先输入 prompt 会清空变量，暂时不做优化
         </p>
@@ -73,15 +70,16 @@
       <n-form-item label="添加变量:">
         <n-data-table :columns="variableColumns" :row-key="(row: VariableInfo) => row.variable" :data="variableList" />
       </n-form-item>
+      <n-form-item label="用户默认输入:" path="input">
+        <NInput v-model:value="model.input" type="textarea" maxlength="200" placeholder="请输入" />
+      </n-form-item>
       <n-form-item label="icon图片:" path="iconUrl">
         <Upload v-model:url="model.iconUrl" />
       </n-form-item>
-      <n-form-item label="标签" path="tagId">
-        <n-radio-group v-model:value="model.tagId">
-          <n-radio v-for="tag in tags" :key="tag.id" :value="tag.id">
-            {{ tag.name }}
-          </n-radio>
-        </n-radio-group>
+      <n-form-item label="标签" path="tagIdList">
+        <n-checkbox-group v-model:value="model.tagIdList">
+          <n-checkbox v-for="tag in tags" :key="tag.id" :value="tag.id" :label="tag.name" />
+        </n-checkbox-group>
       </n-form-item>
       <n-form-item label="是否为热门内容" path="hot">
         <n-switch v-model:value="model.hot" />
@@ -98,12 +96,13 @@
 
 <script setup lang="tsx">
 import type { DataTableColumns, DataTableRowKey, FormInst } from 'naive-ui'
-import { NButton, NInput, NSpace } from 'naive-ui'
+import { NButton, NInput, NPopconfirm, NSpace } from 'naive-ui'
 import type { PromptInfo, TagInfo, VariableInfo } from './type'
-import { createActions, initModel, rules } from './utils'
+import { initModel, rules } from './utils'
 import { deleteCard, modifyCard, searchCard, searchTag } from '~/api/prompt'
 import naiveui from '~/utils/naiveui'
-import { createOptionalColumn } from '~/utils'
+import { createAction, createOptionalColumn } from '~/utils'
+import type { Action } from '~/utils/type'
 
 defineOptions({ name: 'PromptPage' })
 
@@ -211,12 +210,33 @@ const deleteMultipleItem = async () => {
   }
 }
 
+const createActions = (
+  row: PromptInfo,
+  deleteItem: (id: number) => void,
+  editItem: (row: PromptInfo) => void,
+  checkItem: (row: PromptInfo) => void,
+) => {
+  const getDeleteConfirm = (id: number) => h(NPopconfirm, {
+    positiveText: '确定',
+    negativeText: '取消',
+    onPositiveClick: () => deleteItem(id),
+  }, {
+    trigger: () => h('span', { className: 'text-blue cursor' }, '删除'),
+    default: () => '确定删除吗？',
+  })
+  const actions: Action[] = [
+    { row, action: checkItem, title: '查看' },
+    { row, action: editItem, title: '编辑' },
+  ]
+  return h(NSpace, null, () => [...actions.map(createAction), getDeleteConfirm(row.id)])
+}
+
 const columns: DataTableColumns<PromptInfo> = [
   { type: 'selection' },
   createOptionalColumn('id', 'ID'),
   createOptionalColumn('name', '名称'),
   createOptionalColumn('tag', '标签', {
-    render: (row: PromptInfo) => tags.value.find(i => i.id === row.tagId)?.name,
+    render: (row: PromptInfo) => tags.value.filter(i => row.tagIdList?.includes(i.id)).map(i => i.name).join(','),
   }),
   createOptionalColumn('action', '操作', {
     width: 180,
@@ -271,15 +291,15 @@ const variableColumns: DataTableColumns<VariableInfo> = [
 
 const formRef = ref<FormInst | null>(null)
 const confirm = () => {
-  if (!variableList.value.length) {
-    naiveui.message.warning('请添加变量！')
-    return false
-  }
   for (const { variable, description, value } of variableList.value) {
     if ([variable, description, value].some(i => !i)) {
       naiveui.message.warning('请输入变量参数！')
       return false
     }
+  }
+  if (model.value.tagIdList.length > 1) {
+    naiveui.message.warning('当前版本只能选择一个标签！')
+    return false
   }
   return formRef.value?.validate(async (errors) => {
     if (!errors) {
