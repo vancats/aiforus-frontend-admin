@@ -3,7 +3,7 @@ import Layout from '~/pages/index.vue'
 import { getLocalItem } from '~/utils'
 import naiveui from '~/utils/naiveui'
 
-const _import = (path: string) => defineAsyncComponent(() => import(`~/pages/${path}/index.vue`))
+const _import = (path: string) => () => import(`~/pages/${path}/index.vue`)
 
 const routes = [
   { name: 'Home', path: '/', component: Layout },

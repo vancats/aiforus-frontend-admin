@@ -22,7 +22,8 @@
       </NButton>
     </NSpace>
   </div>
-  <n-data-table :columns="columns" :data="listData" :row-key="(row: PromptInfo) => row.id" :pagination="pagination" @update:checked-row-keys="handleCheck" />
+
+  <n-data-table :columns="columns" :data="listData" :row-key="(row: PromptInfo) => row.id" h-70vh flex-height :pagination="pagination" @update:checked-row-keys="handleCheck" />
 
   <n-modal
     v-model:show="showModal"

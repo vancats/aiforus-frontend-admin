@@ -32,8 +32,8 @@ import naiveui from '~/utils/naiveui'
 defineOptions({ name: 'LoginPage' })
 
 const model = ref({
-  username: 'admin',
-  password: '123456',
+  username: 'aifocus',
+  password: 'aifocus2023',
 })
 
 const rules = {
