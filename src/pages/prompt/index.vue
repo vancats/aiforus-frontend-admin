@@ -165,15 +165,15 @@ const insertItem = () => {
 }
 const editItem = (row: PromptInfo) => {
   model.value = row
-  variableList.value = model.value.variableList || []
   formDisabled.value = false
+  variableList.value = model.value.variableList || []
   showModal.value = true
 }
 const checkItem = (row: PromptInfo) => {
+  model.value = row
   formDisabled.value = true
   variableList.value = model.value.variableList || []
   showModal.value = true
-  model.value = row
 }
 
 const deleteItem = async (id: number) => {
