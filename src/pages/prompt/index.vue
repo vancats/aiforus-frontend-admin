@@ -57,7 +57,7 @@
         prompt 中必须要有变量输入，变量用花括号包裹，如：I am a {xxx}，切记英文
       </div>
       <n-form-item label="prompt内容:" path="prompt">
-        <NInput v-model:value="model.prompt" type="textarea" maxlength="200" placeholder="请输入" @input="onPrompt" />
+        <NInput v-model:value="model.prompt" type="textarea" maxlength="1000" placeholder="请输入" @input="onPrompt" />
       </n-form-item>
       <div text-red pl-30>
         key 和 prompt 对应，title 描述，value 值，多值用逗号隔开，切记英文
@@ -72,7 +72,7 @@
         <n-data-table :columns="variableColumns" :row-key="(row: VariableInfo) => row.variable" :data="variableList" />
       </n-form-item>
       <n-form-item label="用户默认输入:" path="input">
-        <NInput v-model:value="model.input" type="textarea" maxlength="200" placeholder="请输入" />
+        <NInput v-model:value="model.input" type="textarea" maxlength="1000" placeholder="请输入" />
       </n-form-item>
       <n-form-item label="icon图片:" path="iconUrl">
         <Upload v-model:url="model.iconUrl" />

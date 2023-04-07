@@ -13,7 +13,7 @@
       <n-input v-model:value="model.username" maxlength="30" placeholder="请输入" />
     </n-form-item>
     <n-form-item label="密码:" path="password">
-      <n-input v-model:value="model.password" maxlength="30" placeholder="请输入" />
+      <n-input v-model:value="model.password" type="password" maxlength="30" placeholder="请输入" />
     </n-form-item>
     <div style="display: flex; justify-content: flex-end">
       <n-button round type="primary" @click="onLogin">
@@ -32,8 +32,8 @@ import naiveui from '~/utils/naiveui'
 defineOptions({ name: 'LoginPage' })
 
 const model = ref({
-  username: 'aifocus',
-  password: 'aifocus2023',
+  username: '',
+  password: '',
 })
 
 const rules = {
