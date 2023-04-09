@@ -260,15 +260,13 @@ const pagination = reactive({
 
 const onPrompt = () => {
   const regex = /{([^}]+)}/g
-  const matches = model.value.prompt.match(regex)
-  if (matches) {
-    const keys = matches.map(match => match.slice(1, -1))
-    variableList.value = keys.map(variable => ({
-      variable,
-      description: '',
-      value: '',
-    }))
-  }
+  const matches = model.value.prompt.match(regex) || []
+  const keys = matches.map(match => match.slice(1, -1))
+  variableList.value = keys.map(variable => ({
+    variable,
+    description: '',
+    value: '',
+  }))
 }
 const variableColumns: DataTableColumns<VariableInfo> = [
   createOptionalColumn('variable', 'variable'),
