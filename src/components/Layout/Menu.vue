@@ -53,5 +53,9 @@ const menuOptions: MenuOption[] = [
     label: renderLinkLabel('Key管理', 'Key'),
     key: 'Key',
   },
+  {
+    label: renderLinkLabel('群二维码管理', 'QRCode'),
+    key: 'QRCode',
+  },
 ]
 </script>

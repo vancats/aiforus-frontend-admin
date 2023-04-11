@@ -3,7 +3,7 @@
     list-type="image-card"
     :custom-request="customRequest"
     :default-file-list="previewFileList"
-    :max="1"
+    :max="max"
   >
     点击上传
   </n-upload>
@@ -12,6 +12,12 @@
 <script setup lang="ts">
 import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
 import { uploadFile } from '~/api'
+
+const { max } = withDefaults(defineProps<{
+  max?: number
+}>(), {
+  max: 1,
+})
 
 const { url } = defineModel<{
   url: string
@@ -28,7 +34,6 @@ const customRequest = async ({ file }: UploadCustomRequestOptions) => {
     else {
       url.value = ''
     }
-    console.log('url: ', url.value)
   }
   catch (e) {
     url.value = ''
@@ -37,7 +42,6 @@ const customRequest = async ({ file }: UploadCustomRequestOptions) => {
 }
 
 const previewFileList = computed(() => {
-  console.log(url.value)
   if (!url.value) return []
   return [
     {

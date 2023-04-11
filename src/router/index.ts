@@ -11,6 +11,7 @@ const routes = [
   { name: 'Prompt', path: '/prompt', component: _import('prompt') },
   { name: 'Tool', path: '/tool', component: _import('tool') },
   { name: 'Key', path: '/key', component: _import('key') },
+  { name: 'QRCode', path: '/qrcode', component: _import('qrcode') },
 ]
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
