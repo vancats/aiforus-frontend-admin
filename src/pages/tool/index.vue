@@ -14,6 +14,9 @@
       <n-input v-model:value="searchVal" @keydown.enter="fetchList" />
     </n-input-group>
     <NSpace>
+      <NButton @click="openWeightModal">
+        设置权重
+      </NButton>
       <NButton @click="deleteMultipleItem">
         批量删除
       </NButton>
@@ -81,6 +84,42 @@
       <n-form-item label="浏览量" path="pageView">
         <n-input-number v-model:value="model.pageView" />
       </n-form-item>
+      <n-form-item label="收藏量" path="collect">
+        <n-input-number v-model:value="model.collect" />
+      </n-form-item>
+      <n-form-item label="点赞量" path="like">
+        <n-input-number v-model:value="model.like" />
+      </n-form-item>
+      <div text-red pl-30>
+        当人工置位值为-1，即为不置位处理，数据从 1 开始，0 为无效值不要使用
+      </div>
+      <n-form-item label="人工置位" path="manualPriority">
+        <n-input-number v-model:value="model.manualPriority" :precision="0" min="-1" />
+      </n-form-item>
+    </n-form>
+  </n-modal>
+
+  <n-modal
+    v-model:show="showWeightModal"
+    preset="dialog"
+    title="编辑权重"
+    :show-icon="false"
+    :mask-closable="false"
+  >
+    <n-form
+      label-placement="left"
+      label-width="auto"
+      require-mark-placement="left"
+      size="medium" px-5
+    >
+      <n-form-item v-for="weight in weightList" :key="weight.weightType" :label="weight.weightType">
+        <n-input-number
+          v-model:value="weight.value"
+          :precision="weightTypes.includes(weight.weightType) ? 0 : 1"
+          :step="weightTypes.includes(weight.weightType) ? 1 : 0.1"
+          @blur="changeWeight(weight)"
+        />
+      </n-form-item>
     </n-form>
   </n-modal>
 </template>
@@ -93,6 +132,8 @@ import { createActions, initModel, rules } from './utils'
 import { deleteCard, modifyCard, searchCard, searchTag } from '~/api/tool'
 import naiveui from '~/utils/naiveui'
 import { createOptionalColumn } from '~/utils'
+import { getWeight, modifyWeight } from '~/api'
+import type { WeightInfo } from '~/utils/type'
 defineOptions({ name: 'ToolPage' })
 
 const tags = ref<TagInfo[]>([])
@@ -242,4 +283,27 @@ onMounted(async () => {
   await fetchTag()
   await fetchList()
 })
+
+const weightTypes = ['浏览量', '点赞量', '评论量', '收藏量']
+const showWeightModal = ref(false)
+const weightList = ref<WeightInfo[]>([])
+const openWeightModal = async () => {
+  showWeightModal.value = true
+  try {
+    const res = await getWeight()
+    weightList.value = res?.filter(item => item.cardType === 1) || []
+  }
+  catch (e) {
+    console.warn(e)
+  }
+}
+const changeWeight = async (weightInfo: WeightInfo) => {
+  try {
+    await modifyWeight(weightInfo)
+    naiveui.message.success('编辑成功')
+  }
+  catch (e) {
+    console.warn((e))
+  }
+}
 </script>

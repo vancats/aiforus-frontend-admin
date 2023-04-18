@@ -23,4 +23,8 @@ export interface PromptInfo {
   visible: boolean
   hot: boolean
   pageView: number
+  like: number
+  comment: number
+  collect: number
+  manualPriority: number
 }

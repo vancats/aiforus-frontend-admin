@@ -36,6 +36,18 @@ export const rules = {
     required: true,
     message: '请输入',
   },
+  collect: {
+    required: true,
+    message: '请输入',
+  },
+  like: {
+    required: true,
+    message: '请输入',
+  },
+  manualPriority: {
+    required: true,
+    message: '请输入',
+  },
 }
 
 export const initModel = () => ({
@@ -51,4 +63,8 @@ export const initModel = () => ({
   visible: false,
   hot: false,
   pageView: 0,
+  like: 0,
+  comment: 0,
+  collect: 0,
+  manualPriority: -1,
 })

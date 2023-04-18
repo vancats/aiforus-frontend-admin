@@ -18,4 +18,8 @@ export interface ToolInfo {
   tagIdList: number[]
   hot: boolean
   pageView: number
+  like: number
+  comment: number
+  collect: number
+  manualPriority: number
 }
