@@ -60,7 +60,7 @@
         prompt 中必须要有变量输入，变量用花括号包裹，如：I am a {xxx}，切记英文
       </div>
       <n-form-item label="prompt内容:" path="prompt">
-        <NInput v-model:value="model.prompt" type="textarea" maxlength="1000" placeholder="请输入" @input="onPrompt" />
+        <NInput v-model:value="model.prompt" type="textarea" maxlength="15000" placeholder="请输入" @input="onPrompt" />
       </n-form-item>
       <div text-red pl-30>
         key 和 prompt 对应，title 描述，value 值，多值用逗号隔开，切记英文
